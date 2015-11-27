@@ -1,14 +1,12 @@
 # turbo
 
-A Clojure library designed to ... well, that part is up to you.
+本人使用的一些常用方法集合。
 
 ## Usage
 
-FIXME
+Turbo your project!
 
 ## License
 
-Copyright © 2015 FIXME
+Copyright © 2015
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
