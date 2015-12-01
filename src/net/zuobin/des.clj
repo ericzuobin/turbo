@@ -13,8 +13,12 @@
 (defn lecai-enc-method
   "docstring"
   [key]
-
-  )
+  (let [length (quot (.length key) 2)]
+      (loop [result [] x length]
+        (if (zero? x)
+          result
+          (recur (conj result x) (dec x))
+          ))))
 
 (defn base64ToString [b]
   "传入byte[] b,返回数组"
