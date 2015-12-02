@@ -15,7 +15,7 @@
   (let [bit-value (bit-or (bit-shift-left (.indexOf "0123456789ABCDEF" (str c1)) 4) (.indexOf "0123456789ABCDEF" (str c2)))]
     (unchecked-byte bit-value)))
 
-(defn lecai-enc-method
+(defn- lecai-enc-method
   "lecai的加密方式"
   [key]
   (byte-array (map byte (let [length (quot (.length key) 2)]
@@ -27,7 +27,7 @@
 
 
 (defn base64ToString [b]
-  "传入byte[] b,返回数组"
+  "传入byte[] b,返回加密字符串"
   (String. (encode b) "UTF-8"))
 
 (defn get-cipher
@@ -38,14 +38,14 @@
      (.init cipher mode key-spec)
      cipher))
 
-(defn enc
+(defn- enc
   [text key secret key-method]
   (let [bytes (bytes text)
         cipher (get-cipher Cipher/ENCRYPT_MODE key secret key-method)]
     (base64ToString (.doFinal cipher bytes))))
 
 (defn encrypt
-  "通用的压缩加密算法.
+  "通用的base64压缩加密算法.
   text:加密字符串,
   key:为八位密匙
   secret: DES,AES等
