@@ -10,15 +10,21 @@
   [key]
   (.getBytes key))
 
+(defn- orByte
+  [c1 c2]
+  (let [bit-value (bit-or (bit-shift-left (.indexOf "0123456789ABCDEF" (str c1)) 4) (.indexOf "0123456789ABCDEF" (str c2)))]
+    (unchecked-byte bit-value)))
+
 (defn lecai-enc-method
-  "docstring"
+  "lecai的加密方式"
   [key]
-  (let [length (quot (.length key) 2)]
-      (loop [result [] x length]
-        (if (zero? x)
+  (byte-array (map byte (let [length (quot (.length key) 2)]
+      (loop [result [] x 0]
+        (if (= x length)
           result
-          (recur (conj result x) (dec x))
-          ))))
+          (recur (conj result (orByte (nth key (* x 2)) (nth key (+ (* x 2) 1)))) (inc x))))))))
+
+
 
 (defn base64ToString [b]
   "传入byte[] b,返回数组"
@@ -39,18 +45,25 @@
     (base64ToString (.doFinal cipher bytes))))
 
 (defn encrypt
+  "通用的压缩加密算法.
+  text:加密字符串,
+  key:为八位密匙
+  secret: DES,AES等
+  "
+  ([text key secret]
+   (enc (byte-method text) key secret byte-method)))
+
+(defn encrypt-lecai
   "公司的压缩加密算法.
   text:加密字符串,
   key:为十六位密匙
   secret: DES,AES等
-  enc-byte-methode:定制key方法,默认就是getbytes[]
+  公司的密匙需经过特殊处理
   "
   ([text key secret]
-   (enc (byte-method text) key secret byte-method))
-  ([text key secret enc-byte-methode]
-   (enc (byte-method text) key secret enc-byte-methode)))
+   (enc (byte-method text) key secret lecai-enc-method)))
 
 (defn -main
   [& args]
-  (println (encrypt "dada" "12345678" "DES"))
+   (println (encrypt-lecai "dada" "0123456789ABCDEF" "DES"))
   )
